@@ -22,3 +22,5 @@ FROM scratch AS final
 COPY --from=js /src/js/build/quickjs /bin/quickjs
 
 CMD ["/bin/quickjs"]
+
+LABEL maintainer=dim9

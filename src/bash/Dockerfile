@@ -7,3 +7,5 @@ FROM scratch AS final
 COPY --from=base /bin/bash-static /bin/bash
 
 CMD ["/bin/bash"]
+
+LABEL maintainer=dim9

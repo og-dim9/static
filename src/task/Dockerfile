@@ -14,3 +14,7 @@ RUN wget --no-check-certificate \
 
 FROM scratch
 COPY --from=task /bin/task /bin/task
+
+CMD ["/bin/task"]
+
+LABEL maintainer=dim9

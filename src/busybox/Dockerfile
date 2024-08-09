@@ -9,3 +9,5 @@ COPY --from=base /bin/busybox /bin/busybox
 RUN ["/bin/busybox", "--install", "/bin"]
 
 CMD ["/bin/ash"]
+
+LABEL maintainer=dim9

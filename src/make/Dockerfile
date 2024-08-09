@@ -19,3 +19,5 @@ FROM scratch AS final
 COPY --from=make /src/make-4.3/make /bin/make
 
 CMD ["/bin/make"]
+
+LABEL maintainer=dim9

@@ -1,4 +1,4 @@
 docker:
 	docker build -t docker.io/dim9/static:terraform .
 push:
-	docker build docker.io/dim9/static:terraform
+	docker push docker.io/dim9/static:terraform

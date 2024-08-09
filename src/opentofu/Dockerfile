@@ -12,7 +12,8 @@ RUN mv tofu /bin/tofu
 
 FROM scratch AS final
 
-COPY --from=builder /bin/tofu /bin/tofu
+COPY --from=builder /bin/tofu /bin/opentofu
+
 
 CMD ["/bin/tofu"]
 

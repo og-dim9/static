@@ -1,8 +1,5 @@
-# FROM debian:stable-slim AS base
-
-# RUN apt-get update && apt-get install -y busybox-static
 FROM alpine:latest AS base
-##build busybox
+
 ARG BUSYBOX_VERSION=1.36.1
 
 RUN apk add --no-cache build-base linux-headers

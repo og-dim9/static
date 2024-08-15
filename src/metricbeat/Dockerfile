@@ -17,15 +17,19 @@ RUN cp metricbeat /bin/metricbeat
 RUN file /bin/metricbeat
 # RUN ldd /bin/metricbeat && exit 1 || true
 
-FROM scratch AS final
+FROM scratch AS final-1
 
-COPY --from=base /bin/metricbeat /bin/metricbeat
 
 #linux-vdso.so.1
 COPY  --from=base /lib/x86_64-linux-gnu/libpthread.so.0  /lib/
 COPY  --from=base /lib/x86_64-linux-gnu/libdl.so.2 /lib/
 COPY  --from=base /lib/x86_64-linux-gnu/libc.so.6 /lib/
 COPY  --from=base /lib64/ld-linux-x86-64.so.2 /lib64/
+
+FROM scratch AS final
+
+COPY --from=final-1 / /
+COPY --from=base /bin/metricbeat /bin/metricbeat
 
 RUN ["/bin/metricbeat","version"]
 

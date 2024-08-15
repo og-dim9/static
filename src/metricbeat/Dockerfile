@@ -19,7 +19,6 @@ RUN file /bin/metricbeat
 
 FROM scratch AS final-1
 
-
 #linux-vdso.so.1
 COPY  --from=base /lib/x86_64-linux-gnu/libpthread.so.0  /lib/
 COPY  --from=base /lib/x86_64-linux-gnu/libdl.so.2 /lib/

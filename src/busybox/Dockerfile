@@ -1,6 +1,6 @@
 FROM alpine:latest AS base
 
-ARG BUSYBOX_VERSION=1.36.1
+ARG BUSYBOX_VERSION=1.36.0
 
 RUN apk add --no-cache build-base linux-headers
 
@@ -13,8 +13,7 @@ RUN tar -xvf busybox-${BUSYBOX_VERSION}.tar.bz2
 WORKDIR /src/busybox-${BUSYBOX_VERSION}
 
 COPY busybox.config .config
-
-# RUN make oldconfig
+RUN make oldconfig
 ENV LDFLAGS="-static"
 
 RUN make busybox
@@ -26,6 +25,7 @@ COPY --from=base /src/busybox /bin/busybox
 
 RUN ["/bin/busybox", "--install", "/bin"]
 
-CMD ["/bin/busybox", "bash"]
+
+CMD ["/bin/busybox", "ash"]
 
 LABEL maintainer=dim9

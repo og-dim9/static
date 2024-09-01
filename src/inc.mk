@@ -1,7 +1,7 @@
 
 #build all images
 
-all: bash busybox connectoctl jq kcat make node nushell opentofu quickjs task terraform yq
+all: bash busybox combi connectctl curl httpbeat jikkou jq kafka-native kcat make metricbeat nginx node nushell opentofu quickjs task terraform yq
 
 #docker build
 
@@ -11,17 +11,38 @@ bash:
 busybox:
 	cd src/busybox && make docker
 
-connectoctl:
-	cd src/connectoctl && make docker
+combi:
+	cd src/combi && make docker
+
+connectctl:
+	cd src/connectctl && make docker
+
+curl:
+	cd src/curl && make docker
+
+httpbeat:
+	cd src/httpbeat && make docker
+
+jikkou:
+	cd src/jikkou && make docker
 
 jq:
 	cd src/jq && make docker
+
+kafka-native:
+	cd src/kafka-native && make docker
 
 kcat:
 	cd src/kcat && make docker
 
 make:
 	cd src/make && make docker
+
+metricbeat:
+	cd src/metricbeat && make docker
+
+nginx:
+	cd src/nginx && make docker
 
 node:
 	cd src/node && make docker
@@ -47,44 +68,65 @@ yq:
 #docker push
 
 push-bash:
-	cd src/bash && make push 
+	cd src/bash && make push
 
 push-busybox:
-	cd src/busybox && make push 
+	cd src/busybox && make push
 
-push-connectoctl:
-	cd src/connectoctl && make push 
+push-combi:
+	cd src/combi && make push
+
+push-connectctl:
+	cd src/connectctl && make push
+
+push-curl:
+	cd src/curl && make push
+
+push-httpbeat:
+	cd src/httpbeat && make push
+
+push-jikkou:
+	cd src/jikkou && make push
 
 push-jq:
-	cd src/jq && make push 
+	cd src/jq && make push
+
+push-kafka-native:
+	cd src/kafka-native && make push
 
 push-kcat:
-	cd src/kcat && make push 
+	cd src/kcat && make push
 
 push-make:
-	cd src/make && make push 
+	cd src/make && make push
+
+push-metricbeat:
+	cd src/metricbeat && make push
+
+push-nginx:
+	cd src/nginx && make push
 
 push-node:
-	cd src/node && make push 
+	cd src/node && make push
 
 push-nushell:
-	cd src/nushell && make push 
+	cd src/nushell && make push
 
 push-opentofu:
-	cd src/opentofu && make push 
+	cd src/opentofu && make push
 
 push-quickjs:
-	cd src/quickjs && make push 
+	cd src/quickjs && make push
 
 push-task:
-	cd src/task && make push 
+	cd src/task && make push
 
 push-terraform:
-	cd src/terraform && make push 
+	cd src/terraform && make push
 
 push-yq:
-	cd src/yq && make push 
+	cd src/yq && make push
 
 #push all images
 
-push: push-bash push-busybox push-connectoctl push-jq push-kcat push-make push-node push-nushell push-opentofu push-quickjs push-task push-terraform push-yq
+push: push-bash push-busybox push-combi push-connectctl push-curl push-httpbeat push-jikkou push-jq push-kafka-native push-kcat push-make push-metricbeat push-nginx push-node push-nushell push-opentofu push-quickjs push-task push-terraform push-yq

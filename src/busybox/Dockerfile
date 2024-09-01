@@ -1,11 +1,11 @@
 FROM alpine:latest AS base
 
-ARG BUSYBOX_VERSION=1.36.0
 
 RUN apk add --no-cache build-base linux-headers
 
 WORKDIR /src
 
+ARG BUSYBOX_VERSION
 RUN wget https://busybox.net/downloads/busybox-${BUSYBOX_VERSION}.tar.bz2
 
 RUN tar -xvf busybox-${BUSYBOX_VERSION}.tar.bz2

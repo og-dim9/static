@@ -26,7 +26,7 @@ inc.mk:
 		sed 's|src/|push-|g' | \
 		sed 's|/Makefile||g' | \
 		sort | \
-		xargs -I@ echo -e "\n@:\n\tcd src/@ && make push " | \
+		xargs -I@ echo -e "\n@:\n\tcd src/@ && make push" | \
 		sed 's|src/push-|src/|g' | \
 		tee -a src/inc.mk
 

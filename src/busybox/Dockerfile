@@ -16,16 +16,15 @@ COPY busybox.config .config
 RUN make oldconfig
 ENV LDFLAGS="-static"
 
-RUN make busybox
+RUN make busybox -j $(nproc)
 RUN cp /src/busybox-${BUSYBOX_VERSION}/busybox /src/busybox
 
 FROM scratch AS final
-
 COPY --from=base /src/busybox /bin/busybox
-
-RUN ["/bin/busybox", "--install", "/bin"]
-
-
+WORKDIR /bin
+WORKDIR /sbin
+WORKDIR /
+RUN ["/bin/busybox", "--install"]
 CMD ["/bin/busybox", "ash"]
 
 LABEL maintainer=dim9

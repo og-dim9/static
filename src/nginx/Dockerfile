@@ -11,10 +11,10 @@ RUN apt-get update && \
     patch \
     file
 
-ENV NGINX_VERSION="1.26.2"
-ENV PCRE_VERSION="8.34"
-ENV ZLIB_VERSION="1.3.1"
-ENV OPENSSL_VERSION="3.3.2"
+ARG NGINX_VERSION="1.26.2"
+ARG PCRE_VERSION="8.34"
+ARG ZLIB_VERSION="1.3.1"
+ARG OPENSSL_VERSION="3.3.2"
 
 ENV NGINX_TARBALL="nginx-${NGINX_VERSION}.tar.gz"
 ENV PCRE_TARBALL="pcre-${PCRE_VERSION}.tar.gz"
@@ -24,19 +24,20 @@ ENV OPENSSL_TARBALL="openssl-${OPENSSL_VERSION}.tar.gz"
 WORKDIR /src
 
 RUN wget "https://master.dl.sourceforge.net/project/pcre/pcre/${PCRE_VERSION}/${PCRE_TARBALL}"
-RUN wget "http://zlib.net/fossils/${ZLIB_TARBALL}"
+RUN wget "https://github.com/madler/zlib/releases/download/v${ZLIB_VERSION}/${ZLIB_TARBALL}"
 RUN wget "http://nginx.org/download/${NGINX_TARBALL}"
 RUN wget "https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/${OPENSSL_TARBALL}"
+RUN file "${PCRE_TARBALL}"
+RUN file "${ZLIB_TARBALL}"
+RUN file "${NGINX_TARBALL}"
+RUN file "${OPENSSL_TARBALL}"
 RUN tar xvzf "${PCRE_TARBALL}"
 RUN tar xvzf "${ZLIB_TARBALL}"
 RUN tar xvzf "${NGINX_TARBALL}"
 RUN tar xvzf "${OPENSSL_TARBALL}"
 
 RUN ln -s /src/nginx-${NGINX_VERSION} /src/nginx
-# --pid-path=./nginx.pid \
-#     --conf-path=./nginx.conf \
-#    --sbin-path=. \
-#     --without-http_proxy_module \
+
 WORKDIR /src/nginx
 
 RUN ./configure \
@@ -46,10 +47,10 @@ RUN ./configure \
 		--with-openssl=/src/openssl-${OPENSSL_VERSION} \
 		--conf-path=/etc/nginx/nginx.conf \
 		--sbin-path=/sbin/nginx \
-		--error-log-path=/var/log/nginx/error.log \
-		--pid-path=/var/run/nginx.pid \
-		--lock-path=/var/lock/nginx.lock \
-		--http-log-path=/var/log/nginx/access.log \
+		--error-log-path=/dev/stderr \
+		--pid-path=/dev/shm/nginx.pid \
+		--lock-path=/dev/shm/nginx.lock \
+		--http-log-path=/dev/stdout \
 		--http-proxy-temp-path=/var/lib/nginx/proxy \
 		--http-client-body-temp-path=/var/lib/nginx/body \
 		--user=nginx \
@@ -87,28 +88,27 @@ RUN ./configure \
 RUN sed -i "/CFLAGS/s/ \-O //g" objs/Makefile
 
 RUN make -j $(nproc)
-RUN strip objs/nginx
 
-FROM busybox AS user
-
-RUN addgroup -g 1000 -S nginx \
-		&& adduser -u 1000 -D -S -G nginx nginx 
-
-FROM dim9/static:busybox-1.30.0 AS prep
-COPY --from=user /etc/passwd /etc/group /etc/shadow /etc/
-
-RUN mkdir -p /bin /etc/nginx /var/www/html /var/log/nginx /var/lib/nginx/proxy \
-			/var/lib/nginx/body  /var/lock /var/run \
-		&& ln -sf /dev/stdout /var/log/nginx/access.log \
-		&& ln -sf /dev/stderr /var/log/nginx/error.log
-
+FROM alpine:3.12 AS upx
+RUN apk add --no-cache upx binutils
 COPY --from=builder /src/nginx/objs/nginx /bin/nginx
-COPY --from=builder /src/nginx/conf /etc/nginx
-COPY --from=builder /src/nginx/html /var/www/html
+RUN strip -s /bin/nginx
+RUN upx --best --lzma /bin/nginx
 
-FROM dim9/static:busybox AS final
-COPY --from=prep / /
+FROM dim9/static:sh AS final
+COPY --from=upx /bin/nginx /bin/nginx
+# COPY --from=dim9/static:curl /bin/curl /bin/curl
+COPY nginx.conf /etc/nginx/nginx.conf
+RUN echo 'nginx:x:1000:' > /etc/group && \
+    echo 'nginx:x:1000:1000:nginx,,,:/var/nginx:/bin/sh' > /etc/passwd && \
+    mkdir -p /var/www/html && \
+    echo '<html><body><h1>hello from nginx</h1></body></html>' > /var/www/html/index.html && \
+    mkdir -p /var/lib/nginx/proxy && \
+    mkdir -p /var/lib/nginx/body && \
+    chown -R nginx:nginx /var /etc/nginx
 
-CMD ["/bin/nginx", "-g", "daemon off;" ]
+USER nginx
+
+CMD ["/bin/nginx"]
 
 

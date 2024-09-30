@@ -1,22 +1,26 @@
 FROM alpine:3.12 as make
-
-RUN apk add --no-cache gcc musl-dev make file
+ARG VERSION=4.3
+RUN apk add --no-cache gcc musl-dev make file upx
 
 WORKDIR /src
 
-RUN wget https://ftp.gnu.org/gnu/make/make-4.3.tar.gz
+RUN wget https://ftp.gnu.org/gnu/make/make-${VERSION}.tar.gz
 
-RUN tar -xzf make-4.3.tar.gz
+RUN tar -xzf make-${VERSION}.tar.gz
 
-WORKDIR /src/make-4.3
+WORKDIR /src/make-${VERSION}
 
-ENV CFLAGS="-static"
+ENV CFLAGS="-static -Os"
 
 RUN ./configure --without-guile
 
-FROM scratch AS final
+RUN make -j $(nproc)
 
-COPY --from=make /src/make-4.3/make /bin/make
+RUN upx --best --ultra-brute make -o /src/make
+
+FROM dim9/static:sh AS final
+
+COPY --from=make /src/make /bin/make
 
 CMD ["/bin/make"]
 

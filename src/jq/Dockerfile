@@ -26,7 +26,7 @@ RUN ./configure \
 
 RUN make
 
-FROM scratch as final
+FROM dim9/static:sh AS final
 
 COPY --from=builder /src/jq/jq /bin/jq
 

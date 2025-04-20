@@ -22,9 +22,8 @@ RUN cmake .
 RUN make 
 RUN upx --best --lzma /src/tini-static -o /bin/tini-upx
 RUN ls -lh /src/tini
+
 FROM scratch AS final
 COPY --from=base /bin/tini-upx /bin/tini
-ENV PS1="\w (\h)\n$ "
-CMD ["/bin/sh"]
 
 LABEL maintainer=dim9

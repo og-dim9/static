@@ -15,8 +15,8 @@ RUN git switch  -c v${VERSION}
 COPY tini.patch ./tini.patch
 RUN git apply tini.patch
 
-ENV CFLAGS="-DPR_SET_CHILD_SUBREAPER=36 -DPR_GET_CHILD_SUBREAPER=37"
-ENV LDFLAGS="-static"
+ENV CFLAGS="-DPR_SET_CHILD_SUBREAPER=36 -DPR_GET_CHILD_SUBREAPER=37 -Os -g0 -ffunction-sections -fdata-sections -fvisibility=hidden -fmerge-all-constants"
+ENV LDFLAGS="-static -Wl,--gc-sections -Wl,--strip-all"
 ENV MINIMAL=
 RUN cmake .
 RUN make 

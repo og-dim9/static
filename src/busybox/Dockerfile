@@ -5,12 +5,12 @@ RUN apk add --no-cache build-base linux-headers upx
 
 WORKDIR /src
 
-ARG BUSYBOX_VERSION
-RUN wget https://busybox.net/downloads/busybox-${BUSYBOX_VERSION}.tar.bz2
+ARG VERSION
+RUN wget https://busybox.net/downloads/busybox-${VERSION}.tar.bz2
 
-RUN tar -xvf busybox-${BUSYBOX_VERSION}.tar.bz2
+RUN tar -xvf busybox-${VERSION}.tar.bz2
 
-WORKDIR /src/busybox-${BUSYBOX_VERSION}
+WORKDIR /src/busybox-${VERSION}
 
 # COPY --chown=root:root  busybox.config .config
 RUN make defconfig
@@ -20,7 +20,7 @@ RUN sed -i 's/.*CONFIG_FEATURE_SH_EXTRA_QUIET.*/CONFIG_FEATURE_SH_EXTRA_QUIET=y/
 ENV LDFLAGS="-static"
 ARG CFLAGS="-Os"
 RUN make busybox -j $(nproc)
-RUN upx --best --lzma /src/busybox-${BUSYBOX_VERSION}/busybox -o /src/busybox
+RUN upx --best --lzma /src/busybox-${VERSION}/busybox -o /src/busybox
 
 FROM scratch AS final
 COPY --from=base /src/busybox /bin/busybox

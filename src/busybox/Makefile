@@ -1,20 +1,20 @@
-BUSYBOX_VERSION := 1.33.1
+VERSION := 1.35.0
 
 docker:
-	docker build -t docker.io/dim9/static:busybox-${BUSYBOX_VERSION} \
-		--build-arg BUSYBOX_VERSION=${BUSYBOX_VERSION} \
+	docker build -t docker.io/dim9/static:busybox-${VERSION} \
+		--build-arg VERSION=${VERSION} \
 		.
 push:
-	docker push docker.io/dim9/static:busybox-${BUSYBOX_VERSION}
+	docker push docker.io/dim9/static:busybox-${VERSION}
 
 
 push-latest:
-	docker tag docker.io/dim9/static:busybox-${BUSYBOX_VERSION} docker.io/dim9/static:busybox
+	docker tag docker.io/dim9/static:busybox-${VERSION} docker.io/dim9/static:busybox
 	docker push docker.io/dim9/static:busybox
 
-menuconfig:
-	docker build -t bb-menuconfig:${BUSYBOX_VERSION} -f Dockerfile.menuconfig \
-		--build-arg BUSYBOX_VERSION=${BUSYBOX_VERSION} .
-	docker run --rm -it -v ${PWD}/busybox.config:/src/busybox-${BUSYBOX_VERSION}/.config2 \
-		bb-menuconfig:${BUSYBOX_VERSION} #make menuconfig
-	docker rmi bb-menuconfig:${BUSYBOX_VERSION}
+shell:
+	docker build -t bb-menuconfig:${VERSION} -f Dockerfile.shell \
+		--build-arg VERSION=${VERSION} .
+	docker run --rm -it -v ${PWD}/busybox.config:/src/busybox-${VERSION}/.config2 \
+		bb-menuconfig:${VERSION}
+	docker rmi bb-menuconfig:${VERSION}

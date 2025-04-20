@@ -1,0 +1,13 @@
+FROM alpine:latest AS base
+
+RUN apk add --no-cache build-base linux-headers ncurses-dev alpine-sdk ncurses-libs
+
+WORKDIR /src
+
+ARG VERSION
+RUN wget https://busybox.net/downloads/busybox-${VERSION}.tar.bz2
+
+RUN tar -xvf busybox-${VERSION}.tar.bz2
+
+WORKDIR /src/busybox-${VERSION}
+

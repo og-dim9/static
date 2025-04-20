@@ -14,7 +14,7 @@ WORKDIR /src/busybox-${VERSION}
 
 COPY --chown=root:root  busybox.config .config
 ENV LDFLAGS="-static"
-
+RUN make oldconfig
 RUN make busybox -j $(nproc)
 RUN upx --best --lzma /src/busybox-${VERSION}/busybox -o /src/busybox
 RUN ls -lh /src/busybox

@@ -1,4 +1,4 @@
-VERSION := 1.33.1
+VERSION := 1.35.0
 
 docker:
 	docker build -t docker.io/dim9/static:sh-${VERSION} --build-arg VERSION=${VERSION} .

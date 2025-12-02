@@ -1,11 +1,13 @@
 #https://gist.github.com/niklasvincent/9709182
 FROM debian:stable-slim AS builder
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
     wget \
-    libpcre3-dev \
+    libpcre2-dev \
     zlib1g-dev \
     libssl-dev \
     patch \
@@ -68,7 +70,7 @@ RUN ./configure \
     --without-http_access_module \
     --without-http_autoindex_module \
     --without-http_geo_module \
-    --without-http_auth_basic_module \
+    --with-http_auth_basic_module \
     --without-http_map_module \
     --without-http_split_clients_module \
     --without-http_referer_module \

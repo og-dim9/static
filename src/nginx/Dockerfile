@@ -26,7 +26,7 @@ ENV OPENSSL_TARBALL="openssl-${OPENSSL_VERSION}.tar.gz"
 WORKDIR /src
 
 RUN wget "https://master.dl.sourceforge.net/project/pcre/pcre/${PCRE_VERSION}/${PCRE_TARBALL}"
-RUN wget "https://github.com/madler/zlib/releases/download/v${ZLIB_VERSION}/${ZLIB_TARBALL}"
+RUN wget "https://zlib.net/${ZLIB_TARBALL}"
 RUN wget "http://nginx.org/download/${NGINX_TARBALL}"
 RUN wget "https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/${OPENSSL_TARBALL}"
 RUN file "${PCRE_TARBALL}"
@@ -70,7 +70,7 @@ RUN ./configure \
     --without-http_access_module \
     --without-http_autoindex_module \
     --without-http_geo_module \
-    --with-http_auth_basic_module \
+    --without-http_auth_basic_module \
     --without-http_map_module \
     --without-http_split_clients_module \
     --without-http_referer_module \
@@ -91,7 +91,7 @@ RUN sed -i "/CFLAGS/s/ \-O //g" objs/Makefile
 
 RUN make -j $(nproc)
 
-FROM alpine:3.12 AS upx
+FROM alpine:latest AS upx
 RUN apk add --no-cache upx binutils
 COPY --from=builder /src/nginx/objs/nginx /bin/nginx
 RUN strip -s /bin/nginx

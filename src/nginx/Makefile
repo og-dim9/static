@@ -1,7 +1,7 @@
 NGINX_VERSION:=1.29.3
-PCRE_VERSION:=8.34
+PCRE_VERSION:=8.45
 ZLIB_VERSION:=1.3.1
-OPENSSL_VERSION:=3.3.2
+OPENSSL_VERSION:=3.5.4
 docker:
 	docker build -t docker.io/dim9/static:nginx-$(NGINX_VERSION) \
 		--build-arg NGINX_VERSION=$(NGINX_VERSION) \
